@@ -1,0 +1,22 @@
+version: '3'
+services:
+  traefik:
+    image: traefik:v2.10
+    ports:
+      - "80:80" ## Web Entrypoint (Defined in traefik.yml)
+      - "443:443" ## Websecure Entrypoint (Defined in traefik.yml)
+      - "8080:8080" ## Traefik Dashboard (enabled in traefik.yml)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock ## Traefik can listen to the Docker events
+      - ./traefik.yml:/etc/traefik/traefik.yml ## Mounting traefik.yml static configuration file into traefik container
+  vault:
+    image: hashicorp/vault
+    environment:
+      - "VAULT_DEV_ROOT_TOKEN_ID=myroottoken"
+      - "VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200"
+    ports:
+     - "8200:8200"
+    labels:
+      - "traefik.http.routers.vault.rule=Host(`vault.isc`)" ## Rules are a set of matchers configured with values, that determine if a particular request matches specific criteria. If the rule is verified, the router becomes active, calls middlewares, and then forwards the request to the service.
+      - "traefik.http.routers.vault.entrypoints=web" ## If not specified, HTTP routers will accept requests from all defined entry points. If you want to limit the router scope to a set of entry points, set the entryPoints option.
+      - "traefik.http.services.vault.loadbalancer.server.port=8200" ## If a container exposes multiple ports, or does not expose any port, then you must manually specify which port Traefik should use for communication by using this labels
