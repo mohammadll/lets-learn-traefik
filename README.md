@@ -14,7 +14,7 @@
 
 ## Kubernetes IngressRoute Provider
   - 07-Setup: We're going to use traefik helm chart to install it. as i saild earlier, we have some different options to use tls in traefik . i'm using my own certificate for the examples of this repository. so i need to override some values of traefik helm chart. if you want to do the same, follow the steps in note.txt ✅
-  - 08-Basic:
-  - 09-HTTPS:
-  - 10-RedirectScheme-middleware:
-  - 11-BasicAuth-middleware:
+  - 08-Basic: IngressRoute is the CRD implementation of a Traefik HTTP router. we're going to use this CRD to connect to "vault.isc" using HTTP protocol. you can also use kubernetes ingress provider insted of ingressRoute , but i prefer to use ingressRoute, because i don't need to use lots of annotations. it will be difficult to manage all those annotations. ✅
+  - 09-HTTPS: We'r going to use "websecure" entrypoint instead of "web" entrypoint to connect to "valut.isc" using HTTPS protocol ✅
+  - 10-RedirectScheme-middleware: Middleware is the CRD implementation of a Traefik middleware. first of all We need to create "RedirectScheme-middleware" using Middleware CRD, then we refer to it by its name in the manifest of ingressRoute
+  - 11-BasicAuth-middleware: Middleware is the CRD implementation of a Traefik middleware. follow thses steps to use basicAuth : 1- We need to create a kubernetes secret that contains the list of authorized users (you can generate use:password using this command: htpasswd -nb user password | base64). 2- create "basicAuth-middleware" using Middleware CRD and refer to the name of users secret in the manifest of middleware. 3- Create the ingressRoute using its CRD and refer to basicAuth-middleware by its name in the manifest of ingressRoute ✅
