@@ -1,0 +1,33 @@
+version: '3'
+services:
+  traefik:
+    image: traefik:v2.10
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yml:/etc/traefik/traefik.yml
+      - ./tls-config/:/etc/traefik/tls-config/
+      - ./certs/:/etc/traefik/certs/
+  vault:
+    image: hashicorp/vault
+    environment:
+      - "VAULT_DEV_ROOT_TOKEN_ID=myroottoken"
+      - "VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200"
+    ports:
+     - "8200:8200"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.vault.rule=Host(`vault.isc`)"
+      - "traefik.http.routers.vault.entrypoints=web"
+      - "traefik.http.routers.vault.middlewares=vault-redirectscheme"
+      - "traefik.http.routers.vault-secure.tls=true"
+      - "traefik.http.routers.vault-secure.rule=Host(`vault.isc`)"
+      - "traefik.http.routers.vault-secure.entrypoints=websecure"
+      - "traefik.http.routers.vault-secure.middlewares=vault-auth"
+      - "traefik.http.services.vault-secure.loadbalancer.server.port=8200"
+      - "traefik.http.middlewares.vault-auth.basicauth.users=admin:$$apr1$$v34sL/e2$$gS78OBDiM3vBejYIbqQSa.,test:$$apr1$$dJjkfYE4$$aK3WuhHkQ9E9I9bomto/9."
+      - "traefik.http.middlewares.vault-redirectscheme.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.vault-redirectscheme.redirectscheme.permanent=true"
