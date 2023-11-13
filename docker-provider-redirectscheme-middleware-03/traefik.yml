@@ -1,0 +1,19 @@
+api:
+  dashboard: true
+  insecure: true
+###################
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+###################
+providers:
+  file:
+    directory: /etc/traefik/tls-config
+    watch: true
+  docker:
+    exposedByDefault: false
+###################
+log:
+  level: INFO
