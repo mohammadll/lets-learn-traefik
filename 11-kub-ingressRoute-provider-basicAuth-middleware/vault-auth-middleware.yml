@@ -1,0 +1,9 @@
+# Declaring the user list
+apiVersion: traefik.io/v1alpha1
+kind: Middleware
+metadata:
+  name: vault-auth
+  namespace: vault
+spec:
+  basicAuth:
+    secret: vault-users
