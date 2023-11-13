@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: traefik-tls-config
+  labels:
+    name: traefik-config
+data:
+  tls.yaml: |
+    tls:
+      certificates:
+        - certFile: /etc/traefik/certs/tls.crt
+          keyFile: /etc/traefik/certs/tls.key

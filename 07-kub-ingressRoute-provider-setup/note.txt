@@ -1,0 +1,6 @@
+### i decided to override some values of traefik helm chart to use self-signed certificate for the examples . if you want to do the same , follow the below steps
+
+### Steps
+  01 - kubectl apply -f traefik-cm.yml
+  02 - cd certs && kubectl create secret tls traefik-tls-secret --key="traefik.key" --cert="traefik.crt" 
+  03 - helm install traefik traefik/traefik -f values.yml

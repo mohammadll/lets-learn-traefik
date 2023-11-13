@@ -1,0 +1,9 @@
+additionalArguments:
+  - '--providers.file.directory=/etc/traefik/config'
+volumes:
+  - name: traefik-tls-secret
+    mountPath: "/etc/traefik/certs"
+    type: secret
+  - name: traefik-tls-config
+    mountPath: "/etc/traefik/config"
+    type: configMap
